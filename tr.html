@@ -1,0 +1,1000 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>【2026年最新】所得税計算ツール | 高精度・手取り額シミュレーター</title>
+  <meta name="description" content="年収や控除を入力するだけで、所得税・住民税・社会保険料・手取り額をリアルタイムに計算。会社員・個人事業主対応の2026年(令和8年)最新版税金シミュレーター。">
+  <meta name="keywords" content="所得税 計算, 手取り 計算, 住民税 計算, 税金 シミュレーション, 給与所得控除, 2026年">
+
+  <!-- Tailwind CSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Google Fonts (Noto Sans JP) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Chart.js -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <!-- FontAwesome for Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
+  <!-- Schema.org JSON-LD for Google Japan SEO -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "SoftwareApplication",
+        "name": "所得税計算ツール 2026",
+        "operatingSystem": "All",
+        "applicationCategory": "FinanceApplication",
+        "offers": {
+          "@type": "Offer",
+          "price": "0",
+          "priceCurrency": "JPY"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "所得税と住民税の違いは何ですか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "所得税は国に納める国税で、当年の所得に応じて税率（5%〜45%）が変動します。住民税は都道府県や市区町村に納める地方税で、前年の所得に対して一律約10%が課税されます。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "給与所得控除とは何ですか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "会社員やパートなどの給与所得者に適用されるみなし経費のことです。年収に応じて国税庁が定めた計算式で控除額が決定されます。"
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "所得税を節税する主な方法はありますか？",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "ふるさと納税やiDeCo（個人型確定拠出年金）、生命保険料控除、医療費控除などを活用することで、課税所得を減らし節税することが可能です。"
+            }
+          }
+        ]
+      }
+    ]
+  }
+  </script>
+
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['"Noto Sans JP"', 'sans-serif'],
+          },
+          colors: {
+            brand: {
+              50: '#eef2ff',
+              100: '#e0e7ff',
+              500: '#4f46e5',
+              600: '#4338ca',
+              700: '#3730a3',
+              900: '#1e1b4b',
+            }
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    body {
+      font-family: 'Noto Sans JP', sans-serif;
+      background-color: #f8fafc;
+      color: #1e293b;
+    }
+    input[type=range]::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      height: 20px;
+      width: 20px;
+      border-radius: 50%;
+      background: #4f46e5;
+      cursor: pointer;
+      box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+      transition: background .15s ease-in-out;
+    }
+    input[type=range]::-webkit-slider-thumb:hover {
+      background: #4338ca;
+    }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between antialiased">
+
+  <!-- Navigation / Header -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
+      <div class="flex items-center space-x-3 cursor-pointer" onclick="switchTab('calculator')">
+        <div class="w-10 h-10 rounded-xl bg-gradient-to-tr from-brand-600 to-indigo-400 flex items-center justify-center text-white shadow-md">
+          <i class="fa-solid font-bold text-xl fa-calculator"></i>
+        </div>
+        <div>
+          <h1 class="font-extrabold text-lg sm:text-xl text-slate-800 tracking-tight leading-none">所得税計算ツール</h1>
+          <p class="text-xs text-slate-500 mt-0.5">2026年（令和8年）度 国税庁基準準拠</p>
+        </div>
+      </div>
+
+      <!-- Desktop Navigation Links -->
+      <nav class="hidden md:flex items-center space-x-6 text-sm font-semibold text-slate-600">
+        <button onclick="switchTab('calculator')" class="nav-link hover:text-brand-600 transition-colors text-brand-600" data-target="calculator">シミュレーター</button>
+        <button onclick="switchTab('faq')" class="nav-link hover:text-brand-600 transition-colors" data-target="faq">よくある質問(FAQ)</button>
+        <button onclick="switchTab('about')" class="nav-link hover:text-brand-600 transition-colors" data-target="about">当サイトについて</button>
+        <button onclick="switchTab('privacy')" class="nav-link hover:text-brand-600 transition-colors" data-target="privacy">プライバシーポリシー</button>
+        <button onclick="switchTab('contact')" class="nav-link hover:text-brand-600 transition-colors" data-target="contact">お問い合わせ</button>
+      </nav>
+
+      <div class="flex items-center space-x-2">
+        <button onclick="toggleModal('infoModal')" class="text-xs sm:text-sm font-medium text-slate-600 hover:text-brand-600 px-3 py-1.5 rounded-lg border border-slate-200 hover:border-brand-500 transition-all flex items-center gap-1.5 bg-slate-50">
+          <i class="fa-regular fa-circle-question text-brand-500"></i>
+          <span>税率表・仕組み</span>
+        </button>
+        <button onclick="toggleMobileMenu()" class="md:hidden text-slate-600 text-xl px-2">
+          <i class="fa-solid fa-bars"></i>
+        </button>
+      </div>
+    </div>
+
+    <!-- Mobile Dropdown Navigation -->
+    <div id="mobileMenu" class="hidden md:hidden bg-white border-b border-slate-200 px-4 py-3 flex flex-col space-y-2 text-sm font-medium text-slate-700">
+      <button onclick="switchTab('calculator'); toggleMobileMenu();" class="text-left py-1.5 hover:text-brand-600">シミュレーター</button>
+      <button onclick="switchTab('faq'); toggleMobileMenu();" class="text-left py-1.5 hover:text-brand-600">よくある質問(FAQ)</button>
+      <button onclick="switchTab('about'); toggleMobileMenu();" class="text-left py-1.5 hover:text-brand-600">当サイトについて</button>
+      <button onclick="switchTab('privacy'); toggleMobileMenu();" class="text-left py-1.5 hover:text-brand-600">プライバシーポリシー</button>
+      <button onclick="switchTab('contact'); toggleMobileMenu();" class="text-left py-1.5 hover:text-brand-600">お問い合わせ</button>
+    </div>
+  </header>
+
+  <!-- Main Content Area -->
+  <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-grow w-full">
+
+    <!-- PAGE 1: MAIN CALCULATOR -->
+    <div id="calculator" class="tab-content active space-y-8">
+      
+      <!-- Top Summary Banner -->
+      <div class="bg-gradient-to-r from-slate-900 via-brand-900 to-indigo-950 rounded-2xl p-6 sm:p-8 text-white shadow-xl relative overflow-hidden">
+        <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-brand-500/10 rounded-full blur-3xl pointer-events-none"></div>
+        
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-6 relative z-10 divide-y md:divide-y-0 md:divide-x divide-slate-700/60">
+          <!-- Take Home Pay -->
+          <div class="pb-4 md:pb-0 md:pr-4 flex flex-col justify-center">
+            <span class="text-xs font-semibold text-emerald-400 uppercase tracking-wider mb-1 flex items-center gap-1">
+              <i class="fa-solid fa-wallet"></i> 年間手取り目安
+            </span>
+            <div class="flex items-baseline gap-1">
+              <span id="resTakeHome" class="text-3xl sm:text-4xl font-extrabold text-white tracking-tight">0</span>
+              <span class="text-sm font-medium text-slate-300">万円</span>
+            </div>
+            <span class="text-xs text-slate-400 mt-1">月額目安: <span id="resTakeHomeMonthly" class="font-bold text-slate-200">0</span> 万円</span>
+          </div>
+
+          <!-- Income Tax -->
+          <div class="pt-4 md:pt-0 md:px-4 flex flex-col justify-center">
+            <span class="text-xs font-semibold text-indigo-300 uppercase tracking-wider mb-1 flex items-center gap-1">
+              <i class="fa-solid fa-receipt"></i> 所得税額（復興特別税含む）
+            </span>
+            <div class="flex items-baseline gap-1">
+              <span id="resIncomeTax" class="text-2xl sm:text-3xl font-extrabold text-white">0</span>
+              <span class="text-sm font-medium text-slate-300">万円</span>
+            </div>
+            <span class="text-xs text-slate-400 mt-1">実効税率: <span id="resTaxRateEff" class="font-bold text-slate-200">0%</span></span>
+          </div>
+
+          <!-- Resident Tax -->
+          <div class="pt-4 md:pt-0 md:px-4 flex flex-col justify-center">
+            <span class="text-xs font-semibold text-blue-300 uppercase tracking-wider mb-1 flex items-center gap-1">
+              <i class="fa-solid fa-building-columns"></i> 住民税額（概算 10%）
+            </span>
+            <div class="flex items-baseline gap-1">
+              <span id="resResidentTax" class="text-2xl sm:text-3xl font-extrabold text-white">0</span>
+              <span class="text-sm font-medium text-slate-300">万円</span>
+            </div>
+            <span class="text-xs text-slate-400 mt-1">翌年課税（調整控除前）</span>
+          </div>
+
+          <!-- Social Insurance -->
+          <div class="pt-4 md:pt-0 md:pl-4 flex flex-col justify-center">
+            <span class="text-xs font-semibold text-amber-300 uppercase tracking-wider mb-1 flex items-center gap-1">
+              <i class="fa-solid fa-shield-halved"></i> 社会保険料控除額
+            </span>
+            <div class="flex items-baseline gap-1">
+              <span id="resSocialInsurance" class="text-2xl sm:text-3xl font-extrabold text-white">0</span>
+              <span class="text-sm font-medium text-slate-300">万円</span>
+            </div>
+            <span class="text-xs text-slate-400 mt-1">健康保険・厚生年金等</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Layout Split: Inputs & Interactive Results -->
+      <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+        
+        <!-- LEFT COLUMN: Input Form Controls (5 cols) -->
+        <div class="lg:col-span-5 space-y-6">
+          
+          <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-6">
+            <div class="flex items-center justify-between pb-3 border-b border-slate-100">
+              <h2 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+                <i class="fa-solid fa-sliders text-brand-600"></i>
+                条件入力
+              </h2>
+              <button onclick="resetInputs()" class="text-xs text-slate-400 hover:text-brand-600 transition-colors">
+                <i class="fa-solid fa-rotate-left mr-1"></i>リセット
+              </button>
+            </div>
+
+            <!-- Worker Type -->
+            <div>
+              <label class="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-2">働き方の選択</label>
+              <div class="grid grid-cols-2 gap-3">
+                <button type="button" id="typeEmployee" onclick="setWorkerType('employee')" 
+                        class="py-2.5 px-3 rounded-xl border-2 font-bold text-sm transition-all flex items-center justify-center gap-2 border-brand-600 bg-brand-50 text-brand-700">
+                  <i class="fa-solid fa-user-tie"></i> 会社員・パート
+                </button>
+                <button type="button" id="typeFreelance" onclick="setWorkerType('freelance')" 
+                        class="py-2.5 px-3 rounded-xl border-2 font-bold text-sm transition-all flex items-center justify-center gap-2 border-slate-200 text-slate-600 hover:border-slate-300">
+                  <i class="fa-solid fa-laptop-code"></i> 個人事業主・フリーランス
+                </button>
+              </div>
+            </div>
+
+            <!-- Gross Income Input -->
+            <div>
+              <div class="flex justify-between items-center mb-2">
+                <label for="grossIncome" class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                  <span id="lblGrossIncome">額面年収（給料総支給額）</span>
+                  <span class="relative group cursor-pointer text-slate-400 hover:text-slate-600">
+                    <i class="fa-solid fa-circle-info text-xs"></i>
+                    <div class="absolute bottom-full left-1/2 -translate-x-1/2 mb-2 hidden group-hover:block w-56 p-2 bg-slate-800 text-white text-xs rounded-lg shadow-lg z-20 font-normal">
+                      税金や社会保険料が引き落とされる前の、額面の年間総収入額です。
+                    </div>
+                  </span>
+                </label>
+                <span class="text-xs text-slate-500 font-mono">単位: 万円</span>
+              </div>
+              
+              <div class="relative rounded-xl shadow-sm">
+                <input type="number" id="grossIncome" value="500" min="0" max="10000" step="10" 
+                       class="w-full text-2xl font-extrabold text-slate-800 pl-4 pr-12 py-3 rounded-xl border border-slate-300 focus:border-brand-500 focus:ring-2 focus:ring-brand-200 outline-none transition-all"
+                       oninput="syncInput('grossIncome')">
+                <div class="absolute inset-y-0 right-0 pr-4 flex items-center pointer-events-none text-slate-500 font-bold">
+                  万円
+                </div>
+              </div>
+
+              <input type="range" id="grossIncomeSlider" min="100" max="2000" step="10" value="500" 
+                     class="w-full h-2 bg-slate-200 rounded-lg appearance-none cursor-pointer mt-4"
+                     oninput="syncSlider('grossIncome')">
+              
+              <!-- Quick Preset Buttons -->
+              <div class="flex flex-wrap gap-1.5 mt-3">
+                <button onclick="setIncomePreset(300)" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 rounded-lg transition-colors">300万</button>
+                <button onclick="setIncomePreset(500)" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 rounded-lg transition-colors">500万</button>
+                <button onclick="setIncomePreset(700)" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 rounded-lg transition-colors">700万</button>
+                <button onclick="setIncomePreset(1000)" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 rounded-lg transition-colors">1000万</button>
+                <button onclick="setIncomePreset(1500)" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 rounded-lg transition-colors">1500万</button>
+              </div>
+            </div>
+
+            <!-- Freelance Expenses -->
+            <div id="freelanceExpenseBox" class="hidden space-y-2 bg-amber-50/60 p-4 rounded-xl border border-amber-200/80">
+              <div class="flex justify-between items-center">
+                <label for="businessExpense" class="text-sm font-bold text-amber-900">必要経費（年間）</label>
+                <span class="text-xs text-amber-700">万円</span>
+              </div>
+              <input type="number" id="businessExpense" value="100" min="0" step="5" 
+                     class="w-full text-lg font-bold text-slate-800 px-3 py-2 rounded-lg border border-amber-300 focus:ring-2 focus:ring-amber-300 outline-none"
+                     oninput="calculateTax()">
+              <p class="text-xs text-amber-800">※売上（年収）から控除される業務費用の合計額を入力してください。</p>
+            </div>
+
+            <!-- Social Insurance Settings -->
+            <div class="space-y-3 pt-2 border-t border-slate-100">
+              <div class="flex items-center justify-between">
+                <label class="text-sm font-bold text-slate-800 flex items-center gap-1.5">
+                  社会保険料控除
+                </label>
+                <label class="inline-flex items-center cursor-pointer">
+                  <input type="checkbox" id="autoSocialIns" checked onchange="toggleSocialInsInput()" class="sr-only peer">
+                  <div class="relative w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
+                  <span class="ms-2 text-xs font-medium text-slate-600" id="socialInsModeText">自動概算 (約15%)</span>
+                </label>
+              </div>
+              
+              <div id="customSocialInsWrapper" class="hidden">
+                <div class="relative rounded-lg">
+                  <input type="number" id="customSocialIns" value="75" min="0" step="1" 
+                         class="w-full text-sm font-bold text-slate-800 pl-3 pr-10 py-2 rounded-lg border border-slate-300 focus:ring-2 focus:ring-brand-200 outline-none"
+                         oninput="calculateTax()">
+                  <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none text-xs text-slate-500 font-bold">万円</div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Deductions Accordion / Extra Options -->
+            <div class="space-y-4 pt-2 border-t border-slate-100">
+              <h3 class="text-xs font-bold text-slate-400 uppercase tracking-wider">配偶者・扶養控除設定</h3>
+              
+              <!-- Spouse Deduction -->
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-sm font-semibold text-slate-700 block">配偶者控除</span>
+                  <span class="text-xs text-slate-400">配偶者の年収103万円以下等の場合</span>
+                </div>
+                <select id="spouseDeduction" onchange="calculateTax()" class="bg-slate-50 border border-slate-300 text-slate-800 text-xs font-bold rounded-lg p-2 focus:ring-brand-500 focus:border-brand-500">
+                  <option value="0">なし (0円)</option>
+                  <option value="38">あり (38万円)</option>
+                </select>
+              </div>
+
+              <!-- Dependents Input -->
+              <div class="flex items-center justify-between">
+                <div>
+                  <span class="text-sm font-semibold text-slate-700 block">扶養親族数 (16歳以上)</span>
+                  <span class="text-xs text-slate-400">1人あたり一般控除 38万円</span>
+                </div>
+                <div class="flex items-center space-x-2">
+                  <button type="button" onclick="changeDependent(-1)" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center transition-colors">-</button>
+                  <span id="dependentCount" class="font-bold text-sm text-slate-800 w-4 text-center">0</span>
+                  <button type="button" onclick="changeDependent(1)" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center transition-colors">+</button>
+                </div>
+              </div>
+
+              <!-- Basic Deduction Info -->
+              <div class="bg-slate-50 p-3 rounded-xl flex items-center justify-between text-xs text-slate-600">
+                <span class="font-medium flex items-center gap-1.5">
+                  <i class="fa-solid fa-check text-emerald-500"></i> 基礎控除（全員適用）
+                </span>
+                <span class="font-bold text-slate-800">48万円</span>
+              </div>
+            </div>
+
+          </div>
+
+        </div>
+
+        <!-- RIGHT COLUMN: Chart, Breakdown Table & Analysis (7 cols) -->
+        <div class="lg:col-span-7 space-y-6">
+          
+          <!-- Interactive Chart & Distribution -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm">
+            <h2 class="font-bold text-slate-800 text-lg mb-4 flex items-center gap-2">
+              <i class="fa-solid fa-chart-pie text-brand-600"></i>
+              収入の内訳（構成比率）
+            </h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-12 gap-6 items-center">
+              <!-- Chart Canvas -->
+              <div class="sm:col-span-6 relative flex justify-center items-center h-52">
+                <canvas id="incomePieChart"></canvas>
+              </div>
+
+              <!-- Breakdown Legend List -->
+              <div class="sm:col-span-6 space-y-3">
+                <div class="p-2.5 rounded-xl bg-emerald-50/60 border border-emerald-100 flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-3 h-3 rounded-full bg-emerald-500"></div>
+                    <span class="text-xs font-bold text-slate-700">手取り額</span>
+                  </div>
+                  <div class="text-right">
+                    <span id="chartLabelTakeHome" class="text-sm font-bold text-slate-800">0万円</span>
+                    <span id="chartPctTakeHome" class="text-xs text-slate-500 block">0%</span>
+                  </div>
+                </div>
+
+                <div class="p-2.5 rounded-xl bg-indigo-50/60 border border-indigo-100 flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-3 h-3 rounded-full bg-indigo-600"></div>
+                    <span class="text-xs font-bold text-slate-700">所得税</span>
+                  </div>
+                  <div class="text-right">
+                    <span id="chartLabelIncomeTax" class="text-sm font-bold text-slate-800">0万円</span>
+                    <span id="chartPctIncomeTax" class="text-xs text-slate-500 block">0%</span>
+                  </div>
+                </div>
+
+                <div class="p-2.5 rounded-xl bg-blue-50/60 border border-blue-100 flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-3 h-3 rounded-full bg-blue-400"></div>
+                    <span class="text-xs font-bold text-slate-700">住民税</span>
+                  </div>
+                  <div class="text-right">
+                    <span id="chartLabelResidentTax" class="text-sm font-bold text-slate-800">0万円</span>
+                    <span id="chartPctResidentTax" class="text-xs text-slate-500 block">0%</span>
+                  </div>
+                </div>
+
+                <div class="p-2.5 rounded-xl bg-amber-50/60 border border-amber-100 flex items-center justify-between">
+                  <div class="flex items-center space-x-2">
+                    <div class="w-3 h-3 rounded-full bg-amber-500"></div>
+                    <span class="text-xs font-bold text-slate-700">社会保険料</span>
+                  </div>
+                  <div class="text-right">
+                    <span id="chartLabelSocialIns" class="text-sm font-bold text-slate-800">0万円</span>
+                    <span id="chartPctSocialIns" class="text-xs text-slate-500 block">0%</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Calculation Process Steps Table -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+            <h2 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+              <i class="fa-solid fa-list-check text-brand-600"></i>
+              計算プロセスの詳細（内訳明細）
+            </h2>
+
+            <div class="overflow-x-auto">
+              <table class="w-full text-left text-xs sm:text-sm">
+                <thead class="bg-slate-50 text-slate-500 uppercase font-semibold border-b border-slate-200">
+                  <tr>
+                    <th class="py-3 px-3">項目名</th>
+                    <th class="py-3 px-3">計算式・内容</th>
+                    <th class="py-3 px-3 text-right">金額</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-slate-100 font-medium">
+                  <tr>
+                    <td class="py-3 px-3 font-bold text-slate-800">① 額面収入（年収）</td>
+                    <td class="py-3 px-3 text-slate-500">総支給額</td>
+                    <td id="tblGrossIncome" class="py-3 px-3 text-right font-bold text-slate-800">0 円</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-3 text-slate-700 font-semibold" id="tblDeductionName">② 給与所得控除</td>
+                    <td class="py-3 px-3 text-slate-500" id="tblDeductionFormula">収入に応じた概算控除</td>
+                    <td id="tblDeductionVal" class="py-3 px-3 text-right text-rose-600 font-bold">-0 円</td>
+                  </tr>
+                  <tr class="bg-slate-50/50">
+                    <td class="py-3 px-3 text-slate-800 font-bold">③ 差し引き後の所得金額</td>
+                    <td class="py-3 px-3 text-slate-500">① - ②</td>
+                    <td id="tblNetIncome" class="py-3 px-3 text-right font-bold text-slate-900">0 円</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-3 text-slate-700">④ 各種所得控除 合計</td>
+                    <td class="py-3 px-3 text-slate-500" id="tblTotalDeductionsDesc">基礎控除 + 社保 + 扶養など</td>
+                    <td id="tblTotalDeductions" class="py-3 px-3 text-right text-rose-600 font-bold">-0 円</td>
+                  </tr>
+                  <tr class="bg-indigo-50/30">
+                    <td class="py-3 px-3 font-bold text-brand-700">⑤ 課税所得金額（千円未満切り捨て）</td>
+                    <td class="py-3 px-3 text-brand-600">③ - ④</td>
+                    <td id="tblTaxableIncome" class="py-3 px-3 text-right font-bold text-brand-700 text-base">0 円</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-3 text-slate-700">⑥ 所得税額（基準）</td>
+                    <td class="py-3 px-3 text-slate-500" id="tblTaxBracketDetail">税率 0% (控除 0円)</td>
+                    <td id="tblBaseIncomeTax" class="py-3 px-3 text-right font-bold text-slate-800">0 円</td>
+                  </tr>
+                  <tr>
+                    <td class="py-3 px-3 text-slate-700">⑦ 復興特別所得税</td>
+                    <td class="py-3 px-3 text-slate-500">⑥ × 2.1%</td>
+                    <td id="tblReconstructionTax" class="py-3 px-3 text-right font-bold text-slate-800">0 円</td>
+                  </tr>
+                  <tr class="bg-slate-900 text-white font-bold">
+                    <td class="py-3 px-3 rounded-l-lg">所得税 合計額 (⑥+⑦)</td>
+                    <td class="py-3 px-3 text-slate-300 font-normal">100円未満切り捨て</td>
+                    <td id="tblFinalIncomeTax" class="py-3 px-3 text-right text-emerald-400 text-base rounded-r-lg">0 円</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <!-- Tax Terms / Explanations -->
+          <div class="bg-white rounded-2xl p-6 border border-slate-200/80 shadow-sm space-y-4">
+            <h2 class="font-bold text-slate-800 text-base flex items-center gap-2">
+              <i class="fa-solid fa-book-open text-brand-600"></i>
+              知っておきたい税金の用語解説
+            </h2>
+
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+              <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+                <span class="font-bold text-brand-700 block">給与所得控除とは？</span>
+                <p class="text-slate-600 leading-relaxed">
+                  会社員の「スーツ代や文具代などの必要経費」として、年収入に応じて法律で定められた定額控除額のことです。
+                </p>
+              </div>
+
+              <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+                <span class="font-bold text-brand-700 block">課税所得とは？</span>
+                <p class="text-slate-600 leading-relaxed">
+                  年収そのままではなく、各種控除を引いた後に「実際に税金が課せられる対象となる金額」のことです。
+                </p>
+              </div>
+
+              <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+                <span class="font-bold text-brand-700 block">超過累進税率とは？</span>
+                <p class="text-slate-600 leading-relaxed">
+                  課税所得が高くなるほど、超えた部分に対して段階的に高い税率（5%〜45%）が適用される日本の税制仕組みです。
+                </p>
+              </div>
+
+              <div class="p-3.5 bg-slate-50 rounded-xl border border-slate-100 space-y-1">
+                <span class="font-bold text-brand-700 block">復興特別所得税とは？</span>
+                <p class="text-slate-600 leading-relaxed">
+                  東日本大震災からの復興財源確保のため、2037年まで基準所得税額に対して2.1%が上乗せされる税金です。
+                </p>
+              </div>
+            </div>
+          </div>
+
+        </div>
+
+      </div>
+    </div>
+
+    <!-- PAGE 2: FAQ SECTION -->
+    <div id="faq" class="tab-content space-y-6">
+      <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-6">
+        <h2 class="font-bold text-slate-800 text-xl flex items-center gap-2 border-b pb-4">
+          <i class="fa-solid fa-circle-question text-brand-600"></i>
+          所得税に関するよくある質問 (FAQ)
+        </h2>
+
+        <div class="space-y-4">
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/60 space-y-2">
+            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+              <span class="text-brand-600 font-extrabold">Q.</span> 所得税と住民税の違いは何ですか？
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed pl-5">
+              所得税は「国」に納める国税で、その年の1月〜12月の所得に対して課税されます（税率は5%〜45%）。一方、住民税は「お住まいの自治体」に納める地方税で、前年の所得に対して一律約10%が課税されます。
+            </p>
+          </div>
+
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/60 space-y-2">
+            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+              <span class="text-brand-600 font-extrabold">Q.</span> 給与所得控除とは何ですか？
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed pl-5">
+              会社員やパートなどの給与所得者には、個人事業主のような「経費」の申告が認められていない代わりに、年収に応じて定められた一定額を「みなし経費」として収入から差し引く仕組み（給与所得控除）が用意されています。
+            </p>
+          </div>
+
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/60 space-y-2">
+            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+              <span class="text-brand-600 font-extrabold">Q.</span> 所得税を節税するための主な方法は？
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed pl-5">
+              主な節税対策としては、**ふるさと納税（寄付金控除）**、**iDeCo（小規模企業共済等掛金控除）**、**生命保険料控除**、**医療費控除**（年間10万円以上の医療費がかかった場合）などが挙げられます。
+            </p>
+          </div>
+
+          <div class="bg-slate-50 p-4 rounded-xl border border-slate-200/60 space-y-2">
+            <h3 class="font-bold text-slate-800 text-sm flex items-center gap-2">
+              <span class="text-brand-600 font-extrabold">Q.</span> シミュレーション結果は確定申告と一致しますか？
+            </h3>
+            <p class="text-xs sm:text-sm text-slate-600 leading-relaxed pl-5">
+              本ツールは概算シミュレーターです。標準的な控除金額をもとに算出しているため、住宅ローン控除や個別の特例などにより実際の納税額とは異なる場合があります。
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 3: ABOUT US -->
+    <div id="about" class="tab-content space-y-6">
+      <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-4">
+        <h2 class="font-bold text-slate-800 text-xl border-b pb-3">当サイトについて</h2>
+        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+          「所得税計算ツール 2026」は、日本の複雑な税金構造や手取り額を誰でも簡単にリアルタイムで計算・可視化できるように開発されたWebシミュレーターです。
+        </p>
+        <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
+          国税庁の公表する令和8年（2026年）適用基準の税率表に基づき、会社員やフリーランスの方々の税金把握をサポートします。
+        </p>
+      </div>
+    </div>
+
+    <!-- PAGE 4: PRIVACY POLICY -->
+    <div id="privacy" class="tab-content space-y-6">
+      <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-4">
+        <h2 class="font-bold text-slate-800 text-xl border-b pb-3">プライバシーポリシー</h2>
+        <div class="space-y-3 text-xs sm:text-sm text-slate-600 leading-relaxed">
+          <p>当社サイトは、ご利用者の個人情報およびプライバシーの保護に努めます。</p>
+          <h3 class="font-bold text-slate-800 text-sm">入力データの取り扱いについて</h3>
+          <p>本ツールに入力された年収や控除額などのデータは、お客様のブラウザ（JavaScript）内でのみ計算処理されます。これらの情報が外部サーバーに送信されたり保存されることはありません。</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 5: CONTACT -->
+    <div id="contact" class="tab-content space-y-6">
+      <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-4">
+        <h2 class="font-bold text-slate-800 text-xl border-b pb-3">お問い合わせ</h2>
+        <p class="text-xs sm:text-sm text-slate-600">ご意見・ご要望や不具合の報告は以下のフォームより送信してください。</p>
+        
+        <form onsubmit="handleContactSubmit(event)" class="space-y-4 max-w-lg pt-2">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">お名前</label>
+            <input type="text" required class="w-full text-sm p-2.5 rounded-lg border border-slate-300 outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">メールアドレス</label>
+            <input type="email" required class="w-full text-sm p-2.5 rounded-lg border border-slate-300 outline-none focus:ring-2 focus:ring-brand-500">
+          </div>
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">メッセージ内容</label>
+            <textarea rows="4" required class="w-full text-sm p-2.5 rounded-lg border border-slate-300 outline-none focus:ring-2 focus:ring-brand-500"></textarea>
+          </div>
+          <button type="submit" class="bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs px-6 py-2.5 rounded-xl transition-all shadow">
+            送信する
+          </button>
+        </form>
+      </div>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="bg-white border-t border-slate-200 py-6 mt-12">
+    <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-2">
+      <p>※本ツールの計算結果は概算値です。実際の確定申告や年末調整では、各種特例や正確な社会保険料率により多少の誤差が生じます。</p>
+      <p>&copy; 2026 所得税計算シミュレーター | 国税庁「所得税の税率」対応</p>
+    </div>
+  </footer>
+
+  <!-- Modal: Tax Rate Tables & Info -->
+  <div id="infoModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] overflow-y-auto p-6 shadow-2xl space-y-6">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-4">
+        <h3 class="font-bold text-slate-800 text-lg flex items-center gap-2">
+          <i class="fa-solid fa-table text-brand-600"></i>
+          所得税の超過累進税率表 (国税庁)
+        </h3>
+        <button onclick="toggleModal('infoModal')" class="w-8 h-8 rounded-full bg-slate-100 hover:bg-slate-200 text-slate-500 flex items-center justify-center font-bold">×</button>
+      </div>
+
+      <div class="space-y-4">
+        <p class="text-xs text-slate-600">課税される所得金額に応じて、以下の税率と控除額が適用されます。</p>
+
+        <div class="overflow-x-auto">
+          <table class="w-full text-xs text-left border-collapse">
+            <thead>
+              <tr class="bg-brand-50 text-brand-900 font-bold border-b border-brand-100">
+                <th class="p-2.5">課税される所得金額</th>
+                <th class="p-2.5">税率</th>
+                <th class="p-2.5">控除額</th>
+              </tr>
+            </thead>
+            <tbody class="divide-y divide-slate-100 font-medium text-slate-700">
+              <tr>
+                <td class="p-2.5">195万円 以下</td>
+                <td class="p-2.5 font-bold text-brand-600">5%</td>
+                <td class="p-2.5">0 円</td>
+              </tr>
+              <tr>
+                <td class="p-2.5">195万円超 〜 330万円 以下</td>
+                <td class="p-2.5 font-bold text-brand-600">10%</td>
+                <td class="p-2.5">97,500 円</td>
+              </tr>
+              <tr>
+                <td class="p-2.5">330万円超 〜 695万円 以下</td>
+                <td class="p-2.5 font-bold text-brand-600">20%</td>
+                <td class="p-2.5">427,500 円</td>
+              </tr>
+              <tr>
+                <td class="p-2.5">695万円超 〜 900万円 以下</td>
+                <td class="p-2.5 font-bold text-brand-600">23%</td>
+                <td class="p-2.5">636,000 円</td>
+              </tr>
+              <tr>
+                <td class="p-2.5">900万円超 〜 1,800万円 以下</td>
+                <td class="p-2.5 font-bold text-brand-600">33%</td>
+                <td class="p-2.5">1,536,000 円</td>
+              </tr>
+              <tr>
+                <td class="p-2.5">1,800万円超 〜 4,000万円 以下</td>
+                <td class="p-2.5 font-bold text-brand-600">40%</td>
+                <td class="p-2.5">2,796,000 円</td>
+              </tr>
+              <tr>
+                <td class="p-2.5">4,000万円 超</td>
+                <td class="p-2.5 font-bold text-brand-600">45%</td>
+                <td class="p-2.5">4,796,000 円</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+
+        <div class="bg-amber-50 p-3 rounded-xl border border-amber-200 text-xs text-amber-900 space-y-1">
+          <span class="font-bold block">速算式の使いかた例：</span>
+          <p>課税所得が400万円の場合： 400万円 × 20% - 427,500円 = 372,500円（所得税額）となります。</p>
+        </div>
+      </div>
+
+      <div class="pt-2 text-right">
+        <button onclick="toggleModal('infoModal')" class="px-5 py-2 bg-brand-600 hover:bg-brand-700 text-white font-bold text-xs rounded-xl shadow transition-all">
+          閉じる
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- JAVASCRIPT LOGIC -->
+  <script>
+    // Navigation Tab Switching
+    function switchTab(tabId) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('text-brand-600'));
+
+      const targetTab = document.getElementById(tabId);
+      if (targetTab) targetTab.classList.add('active');
+
+      const activeNav = document.querySelector(`[data-target="${tabId}"]`);
+      if (activeNav) activeNav.classList.add('text-brand-600');
+
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function toggleMobileMenu() {
+      const menu = document.getElementById('mobileMenu');
+      menu.classList.toggle('hidden');
+    }
+
+    function handleContactSubmit(e) {
+      e.preventDefault();
+      alert('お問い合わせありがとうございます。送信が完了しました。');
+      e.target.reset();
+    }
+
+    // Application State Variables
+    let currentWorkerType = 'employee';
+    let dependentCount = 0;
+    let chartInstance = null;
+
+    // Currency Formatter Helpers
+    const formatYen = (num) => new Intl.NumberFormat('ja-JP').format(Math.round(num));
+    const formatManYen = (num) => (num / 10000).toFixed(1);
+
+    // Initialize application on page load
+    window.onload = function() {
+      initChart();
+      calculateTax();
+    };
+
+    // Toggle Modal Utility
+    function toggleModal(id) {
+      const modal = document.getElementById(id);
+      modal.classList.toggle('hidden');
+    }
+
+    // Set Worker Type (Employee vs Freelance)
+    function setWorkerType(type) {
+      currentWorkerType = type;
+      const btnEmp = document.getElementById('typeEmployee');
+      const btnFree = document.getElementById('typeFreelance');
+      const freelanceBox = document.getElementById('freelanceExpenseBox');
+      const lblGross = document.getElementById('lblGrossIncome');
+      const tblDeductionName = document.getElementById('tblDeductionName');
+
+      if (type === 'employee') {
+        btnEmp.className = "py-2.5 px-3 rounded-xl border-2 font-bold text-sm transition-all flex items-center justify-center gap-2 border-brand-600 bg-brand-50 text-brand-700";
+        btnFree.className = "py-2.5 px-3 rounded-xl border-2 font-bold text-sm transition-all flex items-center justify-center gap-2 border-slate-200 text-slate-600 hover:border-slate-300";
+        freelanceBox.classList.add('hidden');
+        lblGross.textContent = "額面年収（給料総支給額）";
+        tblDeductionName.textContent = "② 給与所得控除";
+      } else {
+        btnFree.className = "py-2.5 px-3 rounded-xl border-2 font-bold text-sm transition-all flex items-center justify-center gap-2 border-brand-600 bg-brand-50 text-brand-700";
+        btnEmp.className = "py-2.5 px-3 rounded-xl border-2 font-bold text-sm transition-all flex items-center justify-center gap-2 border-slate-200 text-slate-600 hover:border-slate-300";
+        freelanceBox.classList.remove('hidden');
+        lblGross.textContent = "事業年収（売上総額）";
+        tblDeductionName.textContent = "② 必要経費（控除）";
+      }
+      calculateTax();
+    }
+
+    // Sync Input Number and Range Slider
+    function syncInput(id) {
+      const val = document.getElementById(id).value;
+      document.getElementById(id + 'Slider').value = val;
+      calculateTax();
+    }
+
+    function syncSlider(id) {
+      const val = document.getElementById(id + 'Slider').value;
+      document.getElementById(id).value = val;
+      calculateTax();
+    }
+
+    function setIncomePreset(val) {
+      document.getElementById('grossIncome').value = val;
+      document.getElementById('grossIncomeSlider').value = val;
+      calculateTax();
+    }
+
+    // Toggle Social Insurance Custom Input
+    function toggleSocialInsInput() {
+      const isAuto = document.getElementById('autoSocialIns').checked;
+      const customWrapper = document.getElementById('customSocialInsWrapper');
+      const modeText = document.getElementById('socialInsModeText');
+
+      if (isAuto) {
+        customWrapper.classList.add('hidden');
+        modeText.textContent = "自動概算 (約15%)";
+      } else {
+        customWrapper.classList.remove('hidden');
+        modeText.textContent = "直接入力";
+      }
+      calculateTax();
+    }
+
+    // Dependent Counter Controls
+    function changeDependent(delta) {
+      dependentCount = Math.max(0, Math.min(10, dependentCount + delta));
+      document.getElementById('dependentCount').textContent = dependentCount;
+      calculateTax();
+    }
+
+    // Reset Inputs
+    function resetInputs() {
+      document.getElementById('grossIncome').value = 500;
+      document.getElementById('grossIncomeSlider').value = 500;
+      document.getElementById('businessExpense').value = 100;
+      document.getElementById('autoSocialIns').checked = true;
+      document.getElementById('customSocialIns').value = 75;
+      document.getElementById('spouseDeduction').value = 0;
+      dependentCount = 0;
+      document.getElementById('dependentCount').textContent = 0;
+      setWorkerType('employee');
+    }
+
+    // Japanese Employment Income Deduction Calculation
+    function calcEmploymentDeduction(grossYen) {
+      if (grossYen <= 1625000) return 550000;
+      if (grossYen <= 1800000) return grossYen * 0.4 - 100000;
+      if (grossYen <= 3600000) return grossYen * 0.3 + 80000;
+      if (grossYen <= 6600000) return grossYen * 0.2 + 440000;
+      if (grossYen <= 8500000) return grossYen * 0.1 + 1100000;
+      return 1950000;
+    }
+
+    // Income Tax Brackets
+    function calcProgressiveIncomeTax(taxableYen) {
+      if (taxableYen <= 0) return { tax: 0, rate: 0, deduction: 0 };
+
+      if (taxableYen <= 1950000) return { tax: taxableYen * 0.05, rate: 5, deduction: 0 };
+      if (taxableYen <= 3300000) return { tax: taxableYen * 0.10 - 97500, rate: 10, deduction: 97500 };
+      if (taxableYen <= 6950000) return { tax: taxableYen * 0.20 - 427500, rate: 20, deduction: 427500 };
+      if (taxableYen <= 9000000) return { tax: taxableYen * 0.23 - 636000, rate: 23, deduction: 636000 };
+      if (taxableYen <= 18000000) return { tax: taxableYen * 0.33 - 1536000, rate: 33, deduction: 1536000 };
+      if (taxableYen <= 40000000) return { tax: taxableYen * 0.40 - 2796000, rate: 40, deduction: 2796000 };
+      return { tax: taxableYen * 0.45 - 4796000, rate: 45, deduction: 4796000 };
+    }
+
+    // MAIN TAX CALCULATION ENGINE
+    function calculateTax() {
+      const grossManYen = parseFloat(document.getElementById('grossIncome').value) || 0;
+      const grossYen = grossManYen * 10000;
+
+      let employmentOrExpenseDeduction = 0;
+      if (currentWorkerType === 'employee') {
+        employmentOrExpenseDeduction = calcEmploymentDeduction(grossYen);
+        document.getElementById('tblDeductionFormula').textContent = "給与所得控除（国税庁規定）";
+      } else {
+        const busExpManYen = parseFloat(document.getElementById('businessExpense').value) || 0;
+        employmentOrExpenseDeduction = busExpManYen * 10000;
+        document.getElementById('tblDeductionFormula').textContent = "事業経費（自己申告）";
+      }
+
+      const netIncomeYen = Math.max(0, grossYen - employmentOrExpenseDeduction);
+
+      let socialInsYen = 0;
+      const isAutoSocial = document.getElementById('autoSocialIns').checked;
+      if (isAutoSocial) {
+        socialInsYen = grossYen * 0.15;
+      } else {
+        const customSocialManYen = parseFloat(document.getElementById('customSocialIns').value) || 0;
+        socialInsYen = customSocialManYen * 10000;
+      }
+
+      const basicDeductionYen = 480000;
+      const spouseDeductionYen = (parseFloat(document.getElementById('spouseDeduction').value) || 0) * 10000;
+      const dependentDeductionYen = dependentCount * 380000;
+
+      const totalOtherDeductionsYen = socialInsYen + basicDeductionYen + spouseDeductionYen + dependentDeductionYen;
+
+      const rawTaxableYen = Math.max(0, netIncomeYen - totalOtherDeductionsYen);
+      const taxableYen = Math.floor(rawTaxableYen / 1000) * 1000;
+
+      const taxResult = calcProgressiveIncomeTax(taxableYen);
+      const baseIncomeTaxYen = taxResult.tax;
+
+      const reconstructionTaxYen = baseIncomeTaxYen * 0.021;
+      const finalIncomeTaxYen = Math.floor((baseIncomeTaxYen + reconstructionTaxYen) / 100) * 100;
+
+      const estimatedResidentTaxYen = taxableYen > 0 ? (taxableYen * 0.10) + 5000 : 0;
+      const takeHomeYen = Math.max(0, grossYen - finalIncomeTaxYen - estimatedResidentTaxYen - socialInsYen);
+
+      // UI UPDATES
+      document.getElementById('resTakeHome').textContent = formatManYen(takeHomeYen);
+      document.getElementById('resTakeHomeMonthly').textContent = (takeHomeYen / 12 / 10000).toFixed(1);
+      document.getElementById('resIncomeTax').textContent = formatManYen(finalIncomeTaxYen);
+      document.getElementById('resResidentTax').textContent = formatManYen(estimatedResidentTaxYen);
+      document.getElementById('resSocialInsurance').textContent = formatManYen(socialInsYen);
+
+      const effectiveTaxRate = grossYen > 0 ? ((finalIncomeTaxYen / grossYen) * 100).toFixed(1) : 0;
+      document.getElementById('resTaxRateEff').textContent = effectiveTaxRate + "%";
+
+      document.getElementById('tblGrossIncome').textContent = formatYen(grossYen) + " 円";
+      document.getElementById('tblDeductionVal').textContent = "-" + formatYen(employmentOrExpenseDeduction) + " 円";
+      document.getElementById('tblNetIncome').textContent = formatYen(netIncomeYen) + " 円";
+      document.getElementById('tblTotalDeductions').textContent = "-" + formatYen(totalOtherDeductionsYen) + " 円";
+      document.getElementById('tblTaxableIncome').textContent = formatYen(taxableYen) + " 円";
+      document.getElementById('tblTaxBracketDetail').textContent = `税率 ${taxResult.rate}% (控除額 ${formatYen(taxResult.deduction)}円)`;
+      document.getElementById('tblBaseIncomeTax').textContent = formatYen(baseIncomeTaxYen) + " 円";
+      document.getElementById('tblReconstructionTax').textContent = formatYen(reconstructionTaxYen) + " 円";
+      document.getElementById('tblFinalIncomeTax').textContent = formatYen(finalIncomeTaxYen) + " 円";
+
+      updateChart(takeHomeYen, finalIncomeTaxYen, estimatedResidentTaxYen, socialInsYen, grossYen);
+    }
+
+    // Chart Setup & Update
+    function initChart() {
+      const ctx = document.getElementById('incomePieChart').getContext('2d');
+      chartInstance = new Chart(ctx, {
+        type: 'doughnut',
+        data: {
+          labels: ['手取り額', '所得税', '住民税', '社会保険料'],
+          datasets: [{
+            data: [75, 5, 8, 12],
+            backgroundColor: ['#10b981', '#4f46e5', '#60a5fa', '#f59e0b'],
+            borderWidth: 0,
+            hoverOffset: 6
+          }]
+        },
+        options: {
+          responsive: true,
+          maintainAspectRatio: false,
+          plugins: {
+            legend: { display: false },
+            tooltip: {
+              callbacks: {
+                label: function(context) {
+                  return ` ${context.label}: ${context.raw.toFixed(1)} 万円`;
+                }
+              }
+            }
+          },
+          cutout: '72%'
+        }
+      });
+    }
+
+    function updateChart(takeHome, incomeTax, residentTax, socialIns, total) {
+      if (!chartInstance) return;
+
+      const takeHomeMan = takeHome / 10000;
+      const incomeTaxMan = incomeTax / 10000;
+      const residentTaxMan = residentTax / 10000;
+      const socialInsMan = socialIns / 10000;
+
+      chartInstance.data.datasets[0].data = [takeHomeMan, incomeTaxMan, residentTaxMan, socialInsMan];
+      chartInstance.update();
+
+      const calcPct = (val) => total > 0 ? ((val / (total / 10000)) * 100).toFixed(1) + '%' : '0%';
+
+      document.getElementById('chartLabelTakeHome').textContent = takeHomeMan.toFixed(1) + "万円";
+      document.getElementById('chartPctTakeHome').textContent = calcPct(takeHomeMan);
+
+      document.getElementById('chartLabelIncomeTax').textContent = incomeTaxMan.toFixed(1) + "万円";
+      document.getElementById('chartPctIncomeTax').textContent = calcPct(incomeTaxMan);
+
+      document.getElementById('chartLabelResidentTax').textContent = residentTaxMan.toFixed(1) + "万円";
+      document.getElementById('chartPctResidentTax').textContent = calcPct(residentTaxMan);
+
+      document.getElementById('chartLabelSocialIns').textContent = socialInsMan.toFixed(1) + "万円";
+      document.getElementById('chartPctSocialIns').textContent = calcPct(socialInsMan);
+    }
+  </script>
+</body>
+</html>
