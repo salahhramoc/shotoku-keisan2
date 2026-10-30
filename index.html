@@ -4,8 +4,11 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>【2026年最新】所得税計算ツール | 高精度・手取り額シミュレーター</title>
-  <meta name="description" content="年収や控除を入力するだけで、所得税・住民税・社会保険料・手取り額をリアルタイムに計算。会社員・個人事業主対応��[...]
+  <meta name="description" content="年収や控除を入力するだけで、所得税・住民税・社会保険料・手取り額をリアルタイムに計算。会社員・個人事業主対応の2026年(令和8年)最新版税金シミュレーター。">
   <meta name="keywords" content="所得税 計算, 手取り 計算, 住民税 計算, 税金 シミュレーション, 給与所得控除, 2026年">
+
+  <!-- Luxurious, Clear, & Responsive Favicon (SVG Vector) -->
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='24' fill='%231e1b4b'/><path d='M30 36h40M30 52h40M30 68h24' stroke='%23818cf8' stroke-width='8' stroke-linecap='round'/><circle cx='70' cy='68' r='5' fill='%2334d399'/></svg>">
 
   <!-- Tailwind CSS -->
   <script src="https://cdn.tailwindcss.com"></script>
@@ -42,7 +45,7 @@
             "name": "所得税と住民税の違いは何ですか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "所得税は国に納める国税で、当年の所得に応じて税率（5%〜45%）が変動します。住民税は都道府県や市区町村に納める地方税で、前�[...]"
+              "text": "所得税は国に納める国税で、当年の所得に応じて税率（5%〜45%）が変動します。住民税は都道府県や市区町村に納める地方税で、前年の所得に対して一律約10%が課税されます。"
             }
           },
           {
@@ -50,7 +53,7 @@
             "name": "給与所得控除とは何ですか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "会社員やパートなどの給与所得者に適用されるみなし経費のことです。年収に応じて国税庁が定めた計算式で控除額が決定されます[... ]"
+              "text": "会社員やパートなどの給与所得者に適用されるみなし経費のことです。年収に応じて国税庁が定めた計算式で控除額が決定されます。"
             }
           },
           {
@@ -58,7 +61,7 @@
             "name": "所得税を節税する主な方法はありますか？",
             "acceptedAnswer": {
               "@type": "Answer",
-              "text": "ふるさと納税やiDeCo（個人型確定拠出年金）、生命保険料控除、医療費控除などを活用することで、課税所得を減らし節税すること�[...]"
+              "text": "ふるさと納税やiDeCo（個人型確定拠出年金）、生命保険料控除、医療費控除などを活用することで、課税所得を減らし節税することが可能です。"
             }
           }
         ]
@@ -136,7 +139,7 @@
       </nav>
 
       <div class="flex items-center space-x-2">
-        <button onclick="toggleModal('infoModal')" class="text-xs sm:text-sm font-medium text-slate-600 hover:text-brand-600 px-3 py-1.5 rounded-lg border border-slate-200 hover:border-brand-500 transition-colors">
+        <button onclick="toggleModal('infoModal')" class="text-xs sm:text-sm font-medium text-slate-600 hover:text-brand-600 px-3 py-1.5 rounded-lg border border-slate-200 hover:border-brand-500 transition-all flex items-center gap-1.5 bg-slate-50">
           <i class="fa-regular fa-circle-question text-brand-500"></i>
           <span>税率表・仕組み</span>
         </button>
@@ -279,11 +282,11 @@
               
               <!-- Quick Preset Buttons -->
               <div class="flex flex-wrap gap-1.5 mt-3">
-                <button onclick="setIncomePreset(300)" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 rounded-lg transition-colors">300万円</button>
-                <button onclick="setIncomePreset(500)" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 rounded-lg transition-colors">500万円</button>
-                <button onclick="setIncomePreset(700)" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 rounded-lg transition-colors">700万円</button>
-                <button onclick="setIncomePreset(1000)" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 rounded-lg transition-colors">1000万円</button>
-                <button onclick="setIncomePreset(1500)" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 rounded-lg transition-colors">1500万円</button>
+                <button onclick="setIncomePreset(300)" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 rounded-lg transition-colors">300万</button>
+                <button onclick="setIncomePreset(500)" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 rounded-lg transition-colors">500万</button>
+                <button onclick="setIncomePreset(700)" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 rounded-lg transition-colors">700万</button>
+                <button onclick="setIncomePreset(1000)" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 rounded-lg transition-colors">1000万</button>
+                <button onclick="setIncomePreset(1500)" class="px-2.5 py-1 text-xs font-semibold bg-slate-100 hover:bg-brand-50 hover:text-brand-600 text-slate-600 rounded-lg transition-colors">1500万</button>
               </div>
             </div>
 
@@ -307,7 +310,7 @@
                 </label>
                 <label class="inline-flex items-center cursor-pointer">
                   <input type="checkbox" id="autoSocialIns" checked onchange="toggleSocialInsInput()" class="sr-only peer">
-                  <div class="relative w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:left-[2px] after:bg-white after:border after:border-slate-300 after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
+                  <div class="relative w-9 h-5 bg-slate-200 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-white after:border-slate-300 after:border after:rounded-full after:h-4 after:w-4 after:transition-all peer-checked:bg-brand-600"></div>
                   <span class="ms-2 text-xs font-medium text-slate-600" id="socialInsModeText">自動概算 (約15%)</span>
                 </label>
               </div>
@@ -345,9 +348,9 @@
                   <span class="text-xs text-slate-400">1人あたり一般控除 38万円</span>
                 </div>
                 <div class="flex items-center space-x-2">
-                  <button type="button" onclick="changeDependent(-1)" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center transition-colors">−</button>
+                  <button type="button" onclick="changeDependent(-1)" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center transition-colors">-</button>
                   <span id="dependentCount" class="font-bold text-sm text-slate-800 w-4 text-center">0</span>
-                  <button type="button" onclick="changeDependent(1)" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center transition-colors">＋</button>
+                  <button type="button" onclick="changeDependent(1)" class="w-7 h-7 rounded-lg bg-slate-100 hover:bg-slate-200 text-slate-700 font-bold flex items-center justify-center transition-colors">+</button>
                 </div>
               </div>
 
@@ -548,7 +551,7 @@
               <span class="text-brand-600 font-extrabold">Q.</span> 所得税と住民税の違いは何ですか？
             </h3>
             <p class="text-xs sm:text-sm text-slate-600 leading-relaxed pl-5">
-              所得税は「国」に納める国税で、その年の1月〜12月の所得に対して課税されます（税率は5%〜45%）。一方、住民税は「お住まいの自治体」�[...] 
+              所得税は「国」に納める国税で、その年の1月〜12月の所得に対して課税されます（税率は5%〜45%）。一方、住民税は「お住まいの自治体」に納める地方税で、前年の所得に対して一律約10%が課税されます。
             </p>
           </div>
 
@@ -557,7 +560,7 @@
               <span class="text-brand-600 font-extrabold">Q.</span> 給与所得控除とは何ですか？
             </h3>
             <p class="text-xs sm:text-sm text-slate-600 leading-relaxed pl-5">
-              会社員やパートなどの給与所得者には、個人事業主のような「経費」の申告が認められていない代わりに、年収に応じて定められた一定額[...]
+              会社員やパートなどの給与所得者に適用されるみなし経費のことです。年収に応じて国税庁が定めた計算式で控除額が決定されます。
             </p>
           </div>
 
@@ -566,7 +569,7 @@
               <span class="text-brand-600 font-extrabold">Q.</span> 所得税を節税するための主な方法は？
             </h3>
             <p class="text-xs sm:text-sm text-slate-600 leading-relaxed pl-5">
-              主な節税対策としては、**ふるさと納税（寄付金控除）**、**iDeCo（小規模企業共済等掛���控除）**、**生命保険料控除**、**医療費控除**（年[...]
+              主な節税対策としては、**ふるさと納税（寄付金控除）**、**iDeCo（小規模企業共済等掛金控除）**、**生命保険料控除**、**医療費控除**（年間10万円以上の医療費がかかった場合）などが挙げられます。
             </p>
           </div>
 
@@ -575,7 +578,7 @@
               <span class="text-brand-600 font-extrabold">Q.</span> シミュレーション結果は確定申告と一致しますか？
             </h3>
             <p class="text-xs sm:text-sm text-slate-600 leading-relaxed pl-5">
-              本ツールは概算シミュレーターです。標準的な控除金額をもとに算出しているため、住宅ローン控除や個別の特例などにより実際の納税額[...]
+              本ツールは概算シミュレーターです。標準的な控除金額をもとに算出しているため、住宅ローン控除や個別の特例などにより実際の納税額とは異なる場合があります。
             </p>
           </div>
         </div>
@@ -587,7 +590,7 @@
       <div class="bg-white rounded-2xl p-6 sm:p-8 border border-slate-200/80 shadow-sm space-y-4">
         <h2 class="font-bold text-slate-800 text-xl border-b pb-3">当サイトについて</h2>
         <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
-          「所得税計算ツール 2026」は、日本の複雑な税金構造や手取り額を誰でも簡単にリアルタイムで計算・可視化できるように開発されたWebシミ��[...]
+          「所得税計算ツール 2026」は、日本の複雑な税金構造や手取り額を誰でも簡単にリアルタイムで計算・可視化できるように開発されたWebシミュレーターです。
         </p>
         <p class="text-xs sm:text-sm text-slate-600 leading-relaxed">
           国税庁の公表する令和8年（2026年）適用基準の税率表に基づき、会社員やフリーランスの方々の税金把握をサポートします。
@@ -602,7 +605,7 @@
         <div class="space-y-3 text-xs sm:text-sm text-slate-600 leading-relaxed">
           <p>当社サイトは、ご利用者の個人情報およびプライバシーの保護に努めます。</p>
           <h3 class="font-bold text-slate-800 text-sm">入力データの取り扱いについて</h3>
-          <p>本ツールに入力された年収や控除額などのデータは、お客様のブラウザ（JavaScript）内でのみ計算処理されます。これらの情報が外部サーバ[...]
+          <p>本ツールに入力された年収や控除額などのデータは、お客様のブラウザ（JavaScript）内でのみ計算処理されます。これらの情報が外部サーバーに送信されたり保存されることはありません。</p>
         </div>
       </div>
     </div>
@@ -638,7 +641,7 @@
   <!-- Footer -->
   <footer class="bg-white border-t border-slate-200 py-6 mt-12">
     <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-500 space-y-2">
-      <p>※本ツールの計算結果は概算値です。実際の確定申告や年末調整では、各種��例や正確な社会保険料率により多少の誤差が生じます。</p>
+      <p>※本ツールの計算結果は概算値です。実際の確定申告や年末調整では、各種特例や正確な社会保険料率により多少の誤差が生じます。</p>
       <p>&copy; 2026 所得税計算シミュレーター | 国税庁「所得税の税率」対応</p>
     </div>
   </footer>
